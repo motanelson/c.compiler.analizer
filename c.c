@@ -9,8 +9,10 @@
 #define MAX_LINHA 512
 char backLine[MAX_LINHA];
 char *backLines=backLine;
+int came1=0;
 int lineb=0;
 int linec=0;
+int linhas=0;
 typedef struct {
     char nome[MAX_NOME];
     char linhas[MAX_LINHAS][MAX_LINHA];
@@ -49,12 +51,13 @@ void processar_linha(Subrotina* f, const char* linha) {
     char l[MAX_LINHA];
     strcpy(l, linha);
     trim(l);
-
+    
     if (strncmp(l, "call ", 5) == 0) {
         char* destino = l + 5;
         trim(destino);
         sprintf(f->linhas[f->linha_count++], "call %s", destino);
         adicionar_chamada_indefinida(destino);
+        came1=1;
 
     } else if (strncmp(l, "int ", 4) == 0) {
         char* nome = strtok(l + 4, "=");
@@ -63,6 +66,7 @@ void processar_linha(Subrotina* f, const char* linha) {
             trim(nome);
             trim(valor);
             sprintf(f->vars[f->var_count++], "%s_%s: dw %s", nome, f->nome, valor);
+            came1=1;
         }
 
     } else if (strstr(l, "char*") || strstr(l, "char *")) {
@@ -75,6 +79,7 @@ void processar_linha(Subrotina* f, const char* linha) {
             char* end = strchr(valor, '"');
             if (end) *end = '\0';
             sprintf(f->vars[f->var_count++], "%s_%s: db '%s', 0", nome, f->nome, valor);
+            came1=1;
         }
 
     } else if (strncmp(l, "return ", 7) == 0) {
@@ -82,6 +87,7 @@ void processar_linha(Subrotina* f, const char* linha) {
         trim(val);
         sprintf(f->linhas[f->linha_count++], "mov ax, %s", val);
         sprintf(f->linhas[f->linha_count++], "ret");
+        came1=1;
 
     } else if (strncmp(l, "if (", 4) == 0) {
         char var[32], op[3], val[32];
@@ -114,6 +120,7 @@ void processar_linha(Subrotina* f, const char* linha) {
         sprintf(backLines, "%s:", label);
         linec=0;
         lineb=1;
+        came1=0;
 
     } else if (strncmp(l, "while (", 7) == 0) {
         char var[32], op[3], val[32];
@@ -143,6 +150,7 @@ void processar_linha(Subrotina* f, const char* linha) {
         sprintf(backLines, "%s:", label_fim);
         linec=0;
         lineb=1;
+        came1=0;
 
     } else if (strncmp(l, "for (", 5) == 0) {
         char var[32], op[3], val[32],vars[32],values[32],adds[32];
@@ -173,7 +181,15 @@ void processar_linha(Subrotina* f, const char* linha) {
         sprintf(backLines, "%s:", label_fim);
         linec=0;
         lineb=1;
+        came1=0;
     } else {
+        char cccc[1000];
+        strcpy(cccc,l);
+        trim(cccc);
+        if(came1==0 && strlen(cccc)>0){
+            printf("error on line:%d\n",linhas);
+            sprintf(f->linhas[f->linha_count++], "; error line: %d", linhas);
+        }
         sprintf(f->linhas[f->linha_count++], "; ignorado: %s", l);
     }
     if(lineb==1 && linec==1){
@@ -181,14 +197,16 @@ void processar_linha(Subrotina* f, const char* linha) {
         sprintf(f->linhas[f->linha_count++], "%s",backLines);
     }
     linec++;
+    
 }
 
 void processar_codigo(const char* codigo) {
     const char* p = codigo;
     while ((p = strstr(p, "void ")) != NULL) {
+        linhas++;
         p += 5;
         char nome[MAX_NOME] = {0};
-        sscanf(p, "%32[^()]", nome);
+        sscanf(p, "%31[^()]()", nome);
         char* abre = strchr(p, '{');
         if (!abre) break;
         abre++;
@@ -197,6 +215,7 @@ void processar_codigo(const char* codigo) {
 
         Subrotina* f = &funcoes[func_count++];
         strcpy(f->nome, nome);
+        came1=1;
         f->linha_count = 0;
         f->var_count = 0;
 
@@ -207,7 +226,9 @@ void processar_codigo(const char* codigo) {
             int len = prox ? (prox - linha) : strlen(linha);
             strncpy(buffer, linha, len);
             buffer[len] = '\0';
+            linhas++;
             processar_linha(f, buffer);
+            came1=0;
             if (!prox) break;
             linha = prox + 1;
         }
