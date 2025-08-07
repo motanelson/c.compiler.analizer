@@ -82,6 +82,52 @@ void processar_linha(Subrotina* f, const char* linha) {
             sprintf(f->vars[f->var_count++], "%s_%s: db '%s', 0", nome, f->nome, valor);
             came1=1;
         }
+   
+   } else if (strstr(l, "char ") ) {
+        char nomes[1000];
+        char valores[1000];
+        char* nome = nomes ;
+        char* valor = valores;
+        sscanf(l,"char %31[^=]=\"%100[^\"]\";",nomes,valores);
+        trim(nomes);
+        trim(valores);
+        if (nome && valor) {
+            trim(nome);
+            trim(valor);
+            if (valor[0] == '"') valor++;
+            char* end = strchr(valor, '"');
+            if (end) *end = '\0';
+            sprintf(f->vars[f->var_count++], "%s_%s: db '%s', 0", nome, f->nome, valor);
+            came1=1;
+        }
+    } else if (strncmp(l, "float ", 6) == 0) {
+        char* nome = strtok(l + 6, "=");
+        char* valor = strtok(NULL, ";");
+        if (nome && valor) {
+            trim(nome);
+            trim(valor);
+            sprintf(f->vars[f->var_count++], "%s_%s: dw %s", nome, f->nome, valor);
+            came1=1;
+        }
+    } else if (strncmp(l, "long ", 5) == 0) {
+        char* nome = strtok(l + 5, "=");
+        char* valor = strtok(NULL, ";");
+        if (nome && valor) {
+            trim(nome);
+            trim(valor);
+            sprintf(f->vars[f->var_count++], "%s_%s: dd %s", nome, f->nome, valor);
+            came1=1;
+        }
+    } else if (strstr(l, " = ") != NULL) {
+        char* nome = strtok(l + 0, "=");
+        char* valor = strtok(NULL, ";");
+        if (nome && valor) {
+            trim(nome);
+            trim(valor);
+            sprintf(f->linhas[f->linha_count++], "mov %s_%s, %s", nome, f->nome, valor);
+            came1=1;
+        }
+
 
     } else if (strncmp(l, "return ", 7) == 0) {
         char* val = l + 7;

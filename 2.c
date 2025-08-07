@@ -1,10 +1,12 @@
 void hello()
 {
    int a = 5;
-   int b = 0;
-   int c = 1;
+   float b = 0.9;
+   long c = 1;
+   char ccc="hello world....\n";
+   char *cccc="hello world....\n";
    if (a==0)
-      call hello;
+      a = 10;
    return 0;
 }
 void main()
