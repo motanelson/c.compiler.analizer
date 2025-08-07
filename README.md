@@ -1,1 +1,1 @@
-gui word processor
+c compiler
