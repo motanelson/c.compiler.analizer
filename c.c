@@ -53,7 +53,8 @@ void processar_linha(Subrotina* f, const char* linha) {
     trim(l);
     
     if (strncmp(l, "call ", 5) == 0) {
-        char* destino = l + 5;
+        char destino[1000];
+        sscanf(l,"call %31[^; ];",destino);
         trim(destino);
         sprintf(f->linhas[f->linha_count++], "call %s", destino);
         adicionar_chamada_indefinida(destino);
