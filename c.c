@@ -138,6 +138,16 @@ void processar_linha(Subrotina* f, const char* linha) {
         sprintf(f->linhas[f->linha_count++], "ret");
         came1=1;
 
+    } else if (strncmp(l, "asm ", 4) == 0) {
+        char vals[1000];
+        char* val = vals;
+        sscanf(l, "asm %100[^;];", vals);
+        trim(vals);
+        sprintf(f->linhas[f->linha_count++], "%s", val);
+        
+        came1=1;
+
+
     } else if (strncmp(l, "if (", 4) == 0) {
         char var[32], op[3], val[32];
         sscanf(l, "if (%31[^=<>!]%2[=!<>]%31[^)]", var, op, val);

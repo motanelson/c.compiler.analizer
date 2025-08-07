@@ -9,6 +9,11 @@ void hello()
       a = 10;
    return a;
 }
+void nops(){
+    int a=0;
+    asm nop;
+    return a;
+}
 void main()
 {
     int a = 5;
