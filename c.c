@@ -7,7 +7,10 @@
 #define MAX_LINHAS 1000
 #define MAX_NOME 64
 #define MAX_LINHA 512
-
+char backLine[MAX_LINHA];
+char *backLines=backLine;
+int lineb=0;
+int linec=0;
 typedef struct {
     char nome[MAX_NOME];
     char linhas[MAX_LINHAS][MAX_LINHA];
@@ -108,7 +111,9 @@ void processar_linha(Subrotina* f, const char* linha) {
         }
 
         sprintf(f->linhas[f->linha_count++], "; ... (bloco do if)");
-        sprintf(f->linhas[f->linha_count++], "%s:", label);
+        sprintf(backLines, "%s:", label);
+        linec=0;
+        lineb=1;
 
     } else if (strncmp(l, "while (", 7) == 0) {
         char var[32], op[3], val[32];
@@ -135,7 +140,9 @@ void processar_linha(Subrotina* f, const char* linha) {
 
         sprintf(f->linhas[f->linha_count++], "; ... (bloco do while)");
         sprintf(f->linhas[f->linha_count++], "jmp %s", label_topo);
-        sprintf(f->linhas[f->linha_count++], "%s:", label_fim);
+        sprintf(backLines, "%s:", label_fim);
+        linec=0;
+        lineb=1;
 
     } else if (strncmp(l, "for (", 5) == 0) {
         char var[32], op[3], val[32],vars[32],values[32],adds[32];
@@ -163,11 +170,17 @@ void processar_linha(Subrotina* f, const char* linha) {
         sprintf(f->linhas[f->linha_count++], "inc %s_%s", adds, f->nome);
         sprintf(f->linhas[f->linha_count++], "; ... (bloco do for)");
         sprintf(f->linhas[f->linha_count++], "jmp %s", label_topo);
-        sprintf(f->linhas[f->linha_count++], "%s:", label_fim);
-
+        sprintf(backLines, "%s:", label_fim);
+        linec=0;
+        lineb=1;
     } else {
         sprintf(f->linhas[f->linha_count++], "; ignorado: %s", l);
     }
+    if(lineb==1 && linec==1){
+        lineb=0;
+        sprintf(f->linhas[f->linha_count++], "%s",backLines);
+    }
+    linec++;
 }
 
 void processar_codigo(const char* codigo) {
