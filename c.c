@@ -188,7 +188,7 @@ void processar_codigo(const char* codigo) {
     while ((p = strstr(p, "void ")) != NULL) {
         p += 5;
         char nome[MAX_NOME] = {0};
-        sscanf(p, "%s", nome);
+        sscanf(p, "%32[^()]", nome);
         char* abre = strchr(p, '{');
         if (!abre) break;
         abre++;
