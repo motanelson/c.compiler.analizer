@@ -20,7 +20,7 @@ Subrotina funcoes[MAX_FUNCOES];
 int func_count = 0;
 char chamadas_indefinidas[MAX_FUNCOES][MAX_NOME];
 int chamadas_count = 0;
-
+int for_count = 0;
 int if_count = 0;
 int while_count = 0;
 
@@ -134,6 +134,34 @@ void processar_linha(Subrotina* f, const char* linha) {
         }
 
         sprintf(f->linhas[f->linha_count++], "; ... (bloco do while)");
+        sprintf(f->linhas[f->linha_count++], "jmp %s", label_topo);
+        sprintf(f->linhas[f->linha_count++], "%s:", label_fim);
+
+    } else if (strncmp(l, "for (", 5) == 0) {
+        char var[32], op[3], val[32],vars[32],values[32],adds[32];
+        sscanf(l, "for (%31[^=]=%31[^;];%31[^=<>!]%2[=!<>]%31[^;];%31[^+-])",vars,values, var, op, val,adds);
+        char label_topo[32], label_fim[32];
+        sprintf(label_topo, "fors_%d", for_count);
+        sprintf(label_fim, "endfors_%d", for_count);
+        for_count++;
+        trim(var); trim(val);
+        sprintf(f->linhas[f->linha_count++], "mov %s_%s,%s", vars, f->nome,values);
+        sprintf(f->linhas[f->linha_count++], "%s:", label_topo);
+        if (strstr(l, "==")) {
+            sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
+            sprintf(f->linhas[f->linha_count++], "jne %s", label_fim);
+        } else if (strstr(l, "!=")) {
+            sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
+            sprintf(f->linhas[f->linha_count++], "je %s", label_fim);
+        } else if (strstr(l, ">")) {
+            sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
+            sprintf(f->linhas[f->linha_count++], "jle %s", label_fim);
+        } else if (strstr(l, "<")) {
+            sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
+            sprintf(f->linhas[f->linha_count++], "jge %s", label_fim);
+        }
+        sprintf(f->linhas[f->linha_count++], "inc %s_%s", adds, f->nome);
+        sprintf(f->linhas[f->linha_count++], "; ... (bloco do for)");
         sprintf(f->linhas[f->linha_count++], "jmp %s", label_topo);
         sprintf(f->linhas[f->linha_count++], "%s:", label_fim);
 

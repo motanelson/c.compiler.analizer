@@ -6,5 +6,7 @@ void main() {
         call hello;
     while (a<5)
         call hello;
+    for (a=0;a<10;a++)
+        call hello
     return 2;
 }
