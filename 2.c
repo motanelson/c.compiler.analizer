@@ -7,7 +7,7 @@ void hello()
    char *cccc="hello world....\n";
    if (a==0)
       a = 10;
-   return 0;
+   return a;
 }
 void main()
 {
@@ -21,5 +21,5 @@ void main()
         call hello;
     for (a=0;a<10;a++)
         call hello
-    return 2;
+    return a;
 }

@@ -130,9 +130,11 @@ void processar_linha(Subrotina* f, const char* linha) {
 
 
     } else if (strncmp(l, "return ", 7) == 0) {
-        char* val = l + 7;
-        trim(val);
-        sprintf(f->linhas[f->linha_count++], "mov ax, %s", val);
+        char vals[1000];
+        char* val = vals;
+        sscanf(l, "return %31[^; ];", vals);
+        trim(vals);
+        sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s", val, f->nome);
         sprintf(f->linhas[f->linha_count++], "ret");
         came1=1;
 
