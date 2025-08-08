@@ -24,7 +24,7 @@ void main()
         call hello;
     while (a<b)
         call hello;
-    for (a=0;a<10;a++)
+    for (a=b;a<c;a++)
         call hello
     return 0;
 }
