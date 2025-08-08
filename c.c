@@ -124,7 +124,12 @@ void processar_linha(Subrotina* f, const char* linha) {
         if (nome && valor) {
             trim(nome);
             trim(valor);
-            sprintf(f->linhas[f->linha_count++], "mov %s_%s, %s", nome, f->nome, valor);
+            if(valor[0]>='0' && valor[0]<='9'){
+                sprintf(f->linhas[f->linha_count++], "mov %s_%s, %s", nome, f->nome, valor);
+            }else{
+                sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s",  valor, f->nome);
+                sprintf(f->linhas[f->linha_count++], "mov %s_%s, ax", nome, f->nome);
+            }
             came1=1;
         }
 
@@ -134,7 +139,11 @@ void processar_linha(Subrotina* f, const char* linha) {
         char* val = vals;
         sscanf(l, "return %31[^; ];", vals);
         trim(vals);
-        sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s", val, f->nome);
+        if(val[0]>='0' && val[0]<='9'){
+            sprintf(f->linhas[f->linha_count++], "mov ax, %s", val);
+        }else{
+            sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s", val, f->nome);
+        }
         sprintf(f->linhas[f->linha_count++], "ret");
         came1=1;
 

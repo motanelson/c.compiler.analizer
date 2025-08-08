@@ -6,7 +6,7 @@ void hello()
    char ccc="hello world....\n";
    char *cccc="hello world....\n";
    if (a==0)
-      a = 10;
+      a = b;
    return a;
 }
 void nops(){
@@ -26,5 +26,5 @@ void main()
         call hello;
     for (a=0;a<10;a++)
         call hello
-    return a;
+    return 0;
 }
