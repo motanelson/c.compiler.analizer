@@ -20,9 +20,9 @@ void main()
     int b = 0;
     int c = 1;
     
-    if (a==b)
+    if (a==5)
         call hello;
-    while (a<5)
+    while (a<b)
         call hello;
     for (a=0;a<10;a++)
         call hello
