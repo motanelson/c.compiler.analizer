@@ -5,7 +5,7 @@ void hello()
    long c = 1;
    char ccc="hello world....\n";
    char *cccc="hello world....\n";
-   if (a==0)
+   if (a==b)
       a = b;
    return a;
 }
