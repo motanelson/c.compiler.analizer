@@ -1,3 +1,9 @@
+void start(){
+    asm [BITS 16]
+    asm org 0x100
+    asm jmp main
+    return 0
+}
 void hello()
 {
    int a = 5;
