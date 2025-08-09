@@ -155,7 +155,56 @@ void processar_linha(Subrotina* f, const char* linha) {
         sprintf(f->linhas[f->linha_count++], "%s", val);
         
         came1=1;
+     } else if (strncmp(l, "inc (", 5) == 0) {
+        char vals[1000];
+        char* val = vals;
+        sscanf(l, "inc (%31[^);]);", vals);
+        trim(vals);
+        sprintf(f->linhas[f->linha_count++], "mov ax,[%s_%s]", val, f->nome);
+        sprintf(f->linhas[f->linha_count++], "inc ax");
+        sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", val, f->nome);
 
+        
+        came1=1;
+    } else if (strncmp(l, "peek (", 6) == 0) {
+        char vals[1000];
+        char* val = vals;
+        char vars[1000];
+        char* var = vars;
+
+        sscanf(l, "peek (%31[^, ],%31[^); ]);", vals,vars);
+
+        trim(vals);
+        trim(vars);
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov bx,[%s_%s]", vars, f->nome);
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov al,[bx]");
+        sprintf(f->linhas[f->linha_count++], "mov ah,0");
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", val, f->nome);
+
+        
+        came1=1;
+    } else if (strncmp(l, "putc (", 6) == 0) {
+        char vals[1000];
+        char* val = vals;
+        char vars[1000];
+        char* var = vars;
+
+        sscanf(l, "putc (%31[ );]);", vals);
+        trim(vals);
+        trim(vars);
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov al,[%s_%s]", vals, f->nome);
+        sprintf(f->linhas[f->linha_count++], "mov ah,0");
+        sprintf(f->linhas[f->linha_count++], "mov dl,al");
+        sprintf(f->linhas[f->linha_count++], "mov ah,2");
+        sprintf(f->linhas[f->linha_count++], "int 0x21");
+
+
+        
+        came1=1;
 
     } else if (strncmp(l, "if (", 4) == 0) {
         char var[32], op[3], val[32];
@@ -166,53 +215,67 @@ void processar_linha(Subrotina* f, const char* linha) {
 
         if (strstr(l, "==")) {
             if(val[0]>='0' && val[0]<='9'){
-                sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
+                sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+                sprintf(f->linhas[f->linha_count++], "cmp ax, %s", val);
             }else{
-               sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s", var, f->nome);
-               sprintf(f->linhas[f->linha_count++], "cmp ax, %s_%s", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov bx, [%s_%s]", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "cmp ax, bx");
 
             }
             sprintf(f->linhas[f->linha_count++], "jne %s", label);
         } else if (strstr(l, "!=")) {
             if(val[0]>='0' && val[0]<='9'){
-                sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
+                sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+                sprintf(f->linhas[f->linha_count++], "cmp ax, %s", val);
             }else{
-               sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s", var, f->nome);
-               sprintf(f->linhas[f->linha_count++], "cmp ax, %s_%s", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov bx, [%s_%s]", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "cmp ax, bx");
+
             }
             sprintf(f->linhas[f->linha_count++], "je %s", label);
         } else if (strstr(l, ">=")) {
             if(val[0]>='0' && val[0]<='9'){
-                sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
+                sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+                sprintf(f->linhas[f->linha_count++], "cmp ax, %s", val);
             }else{
-               sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s", var, f->nome);
-               sprintf(f->linhas[f->linha_count++], "cmp ax, %s_%s", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov bx, [%s_%s]", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "cmp ax, bx");
 
             }
             sprintf(f->linhas[f->linha_count++], "jl %s", label);
         } else if (strstr(l, "<=")) {
             if(val[0]>='0' && val[0]<='9'){
-                sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
+                sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+                sprintf(f->linhas[f->linha_count++], "cmp ax, %s", val);
             }else{
-               sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s", var, f->nome);
-               sprintf(f->linhas[f->linha_count++], "cmp ax, %s_%s", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov bx, [%s_%s]", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "cmp ax, bx");
 
             }
              sprintf(f->linhas[f->linha_count++], "jg %s", label);
         } else if (strstr(l, ">")) {
             if(val[0]>='0' && val[0]<='9'){
-                 sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
+                sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+                sprintf(f->linhas[f->linha_count++], "cmp ax, %s", val);
             }else{
-               sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s", var, f->nome);
-               sprintf(f->linhas[f->linha_count++], "cmp ax, %s_%s", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov bx, [%s_%s]", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "cmp ax, bx");
+
             }
             sprintf(f->linhas[f->linha_count++], "jle %s", label);
         } else if (strstr(l, "<")) {
             if(val[0]>='0' && val[0]<='9'){
-                sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
+                sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+                sprintf(f->linhas[f->linha_count++], "cmp ax, %s", val);
             }else{
-               sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s", var, f->nome);
-               sprintf(f->linhas[f->linha_count++], "cmp ax, %s_%s", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov bx, [%s_%s]", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "cmp ax, bx");
 
             }
             sprintf(f->linhas[f->linha_count++], "jge %s", label);
@@ -393,7 +456,7 @@ void gravar_saida(const char* nome_saida) {
         return;
     }
 
-    fprintf(f, "; Código Assembly 16-bit (NASM)\n\nsection .text\n\n");
+    fprintf(f, "; Código Assembly 16-bit (NASM)\n\nsection .text\n    [BITS 16]\n    org 0x100\n    call main\n   ret\n\n");
 
     for (int i = 0; i < func_count; i++) {
         fprintf(f, "%s:\n", funcoes[i].nome);
