@@ -204,13 +204,128 @@ void processar_linha(Subrotina* f, const char* linha) {
         
         came1=1;
 
+    } else if (strncmp(l, "setPar1 (", 9) == 0) {
+        char vals[1000];
+        char* val = vals;
+        char vars[1000];
+        char* var = vars;
+
+        sscanf(l, "setPar1 (%31[^); ]);", vars);
+
+        trim(vars);
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov ax,[%s_%s]", vars, f->nome);
+
+        
+        came1=1;
+    } else if (strncmp(l, "setPar2 (", 9) == 0) {
+        char vals[1000];
+        char* val = vals;
+        char vars[1000];
+        char* var = vars;
+
+        sscanf(l, "setPar2 (%31[^); ]);", vars);
+
+        trim(vars);
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov bx,[%s_%s]", vars, f->nome);
+
+        
+        came1=1;
+    } else if (strncmp(l, "setPar3 (", 9) == 0) {
+        char vals[1000];
+        char* val = vals;
+        char vars[1000];
+        char* var = vars;
+
+        sscanf(l, "setPar3 (%31[^); ]);", vars);
+
+        trim(vars);
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov cx,[%s_%s]", vars, f->nome);
+
+        
+        came1=1;
+    } else if (strncmp(l, "setPar4 (", 9) == 0) {
+        char vals[1000];
+        char* val = vals;
+        char vars[1000];
+        char* var = vars;
+
+        sscanf(l, "setPar4 (%31[^); ]);", vars);
+
+        trim(vars);
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov dx,[%s_%s]", vars, f->nome);
+
+        
+        came1=1;
+
+    } else if (strncmp(l, "getPar1 (", 9) == 0) {
+        char vals[1000];
+        char* val = vals;
+        char vars[1000];
+        char* var = vars;
+
+        sscanf(l, "getPar1 (%31[^); ]);", vars);
+
+        trim(vars);
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
+
+        
+        came1=1;
+    } else if (strncmp(l, "getPar2 (", 9) == 0) {
+        char vals[1000];
+        char* val = vals;
+        char vars[1000];
+        char* var = vars;
+
+        sscanf(l, "getPar2 (%31[^); ]);", vars);
+
+        trim(vars);
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov [%s_%s],bx", vars, f->nome);
+
+        
+        came1=1;
+    } else if (strncmp(l, "getPar3 (", 9) == 0) {
+        char vals[1000];
+        char* val = vals;
+        char vars[1000];
+        char* var = vars;
+
+        sscanf(l, "getPar3 (%31[^); ]);", vars);
+
+        trim(vars);
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov [%s_%s],cx", vars, f->nome);
+
+        
+        came1=1;
+    } else if (strncmp(l, "getPar3 (", 9) == 0) {
+        char vals[1000];
+        char* val = vals;
+        char vars[1000];
+        char* var = vars;
+
+        sscanf(l, "getPar2 (%31[^); ]);", vars);
+
+        trim(vars);
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov [%s_%s],dx", vars, f->nome);
+
+        
+        came1=1;
+
+
     } else if (strncmp(l, "putc (", 6) == 0) {
         char vals[1000];
         char* val = vals;
         char vars[1000];
         char* var = vars;
 
-        sscanf(l, "putc (%31[ );]);", vals);
+        sscanf(l, "putc (%31[^);]);", vals);
         trim(vals);
         trim(vars);
         sprintf(f->linhas[f->linha_count++], "cs");
