@@ -1,15 +1,8 @@
-void getp(){
-    asm cs;
-    asm mov ax,toPrint_main;
-    asm cs;
-    asm mov [count_print],ax;
-    return 0
-}
 void print()
 {
    int count = 0;
    int values = 0;
-   call getp;
+   getPointer (count,toPrint_main);
    asm loop_print:;
    peek (values,count);
    putc (values);

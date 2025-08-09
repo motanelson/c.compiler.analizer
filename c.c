@@ -186,6 +186,24 @@ void processar_linha(Subrotina* f, const char* linha) {
 
         
         came1=1;
+    } else if (strncmp(l, "getPointer (", 12) == 0) {
+        char vals[1000];
+        char* val = vals;
+        char vars[1000];
+        char* var = vars;
+
+        sscanf(l, "getPointer (%31[^, ],%31[^); ]);", vars,vals);
+
+        trim(vals);
+        trim(vars);
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov ax,%s", vals);
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
+
+        
+        came1=1;
+
     } else if (strncmp(l, "putc (", 6) == 0) {
         char vals[1000];
         char* val = vals;
