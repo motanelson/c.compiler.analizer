@@ -223,6 +223,22 @@ void processar_linha(Subrotina* f, const char* linha) {
 
         
         came1=1;
+    } else if (strncmp(l, "puts (", 6) == 0) {
+        char vals[1000];
+        char* val = vals;
+        char vars[1000];
+        char* var = vars;
+
+        sscanf(l, "puts (%31[ );]);", vals);
+        trim(vals);
+        trim(vars);
+        sprintf(f->linhas[f->linha_count++], "cs");
+        sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s", vals, f->nome);
+        sprintf(f->linhas[f->linha_count++], "call puts");
+
+
+        
+        came1=1;
 
     } else if (strncmp(l, "if (", 4) == 0) {
         char var[32], op[3], val[32];
@@ -474,7 +490,7 @@ void gravar_saida(const char* nome_saida) {
         return;
     }
 
-    fprintf(f, "; Código Assembly 16-bit (NASM)\n\nsection .text\n    [BITS 16]\n    org 0x100\n    call main\n   ret\n\n");
+    fprintf(f, "; Código Assembly 16-bit (NASM)\n\nsection .text\n    [BITS 16]\n    org 0x100\n    call main\n   ret\nputs:\n    mov bx,ax\nputs1_puts:\n     cs\n    mov dl,[bx]\n    mov ah,2\n    int 0x21\n    inc bx\n    cs\n     mov al,[bx]\n     cmp al,0\n     jnz puts1_puts\n     ret\n");
 
     for (int i = 0; i < func_count; i++) {
         fprintf(f, "%s:\n", funcoes[i].nome);
