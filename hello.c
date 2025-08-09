@@ -1,15 +1,22 @@
+void adds(){
+    asm clc;
+    asm add ax,bx;
+    asm ret; 
+    return 0;
+
+}
 void print()
 {
-   int count = 0;
-   int values = 0;
-   getPointer (count,toPrint_main);
+   int count = 1;
+   int values = 32;
    asm loop_print:;
-   peek (values,count);
    putc (values);
-   inc (count);   
-   peek (values,count);
-   if (values != 0)
-       asm jnz loop_print 
+   setPar1 (values);
+   setPar2 (count);
+   call adds;
+   getPar1 (values);
+   if (values != 40 )
+       asm jmp loop_print 
    return 0;
 }
 void main()
