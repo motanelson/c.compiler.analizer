@@ -125,10 +125,14 @@ void processar_linha(Subrotina* f, const char* linha) {
             trim(nome);
             trim(valor);
             if(valor[0]>='0' && valor[0]<='9'){
-                sprintf(f->linhas[f->linha_count++], "mov %s_%s, %s", nome, f->nome, valor);
+                sprintf(f->linhas[f->linha_count++], "mov ax, %s",  valor);
+                sprintf(f->linhas[f->linha_count++], "mov [%s_%s], ax", nome, f->nome);
+
+                //printf("\nxxxx\n");
             }else{
-                sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s",  valor, f->nome);
-                sprintf(f->linhas[f->linha_count++], "mov %s_%s, ax", nome, f->nome);
+                sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]",  valor, f->nome);
+                sprintf(f->linhas[f->linha_count++], "mov [%s_%s], ax", nome, f->nome);
+                //printf("\nxxxx\n");
             }
             came1=1;
         }
@@ -448,38 +452,46 @@ void processar_linha(Subrotina* f, const char* linha) {
         if (strstr(l, "==")) {
             
             if(val[0]>='0' && val[0]<='9'){
-                sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
+                sprintf(f->linhas[f->linha_count++], "cmp ax,%s", val);
+                sprintf(f->linhas[f->linha_count++], "cmp [%s_%s],ax", var, f->nome);
+
             }else{
-               sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s", var, f->nome);
-               sprintf(f->linhas[f->linha_count++], "cmp ax, %s_%s", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+               sprintf(f->linhas[f->linha_count++], "cmp ax, [%s_%s]", val, f->nome);
 
             }
             sprintf(f->linhas[f->linha_count++], "jne %s", label_fim);
         } else if (strstr(l, "!=")) {
 
             if(val[0]>='0' && val[0]<='9'){
-                sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
+                sprintf(f->linhas[f->linha_count++], "cmp ax,%s", val);
+                sprintf(f->linhas[f->linha_count++], "cmp [%s_%s],ax", var, f->nome);
+
             }else{
-               sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s", var, f->nome);
-               sprintf(f->linhas[f->linha_count++], "cmp ax, %s_%s", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+               sprintf(f->linhas[f->linha_count++], "cmp ax, [%s_%s]", val, f->nome);
 
             }
             sprintf(f->linhas[f->linha_count++], "je %s", label_fim);
         } else if (strstr(l, ">")) {
             if(val[0]>='0' && val[0]<='9'){
-                sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
+                sprintf(f->linhas[f->linha_count++], "cmp ax,%s", val);
+                sprintf(f->linhas[f->linha_count++], "cmp [%s_%s],ax", var, f->nome);
+
             }else{
-               sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s", var, f->nome);
-               sprintf(f->linhas[f->linha_count++], "cmp ax, %s_%s", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+               sprintf(f->linhas[f->linha_count++], "cmp ax, [%s_%s]", val, f->nome);
 
             }
             sprintf(f->linhas[f->linha_count++], "jle %s", label_fim);
         } else if (strstr(l, "<")) {
             if(val[0]>='0' && val[0]<='9'){
-                sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
+                sprintf(f->linhas[f->linha_count++], "cmp ax,%s", val);
+                sprintf(f->linhas[f->linha_count++], "cmp [%s_%s],ax", var, f->nome);
+
             }else{
-               sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s", var, f->nome);
-               sprintf(f->linhas[f->linha_count++], "cmp ax, %s_%s", val, f->nome);
+               sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", var, f->nome);
+               sprintf(f->linhas[f->linha_count++], "cmp ax, [%s_%s]", val, f->nome);
 
             }
             sprintf(f->linhas[f->linha_count++], "jge %s", label_fim);
@@ -501,46 +513,56 @@ void processar_linha(Subrotina* f, const char* linha) {
         for_count++;
         trim(var); trim(val);
         if(values[0]>='0' && values[0]<='9'){
-             sprintf(f->linhas[f->linha_count++], "mov %s_%s,%s", vars, f->nome,values);
+             sprintf(f->linhas[f->linha_count++], "mov ax,%s",values);
+             sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
+
          }else{
              sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s",values, f->nome);
              sprintf(f->linhas[f->linha_count++], "mov %s_%s,ax", vars, f->nome);
          }
         sprintf(f->linhas[f->linha_count++], "%s:", label_topo);
         if (strstr(l, "==")) {
-            if(val[0]>='0' && val[0]<='9'){
-                sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
-            }else{
-                sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s", var, f->nome);
-                sprintf(f->linhas[f->linha_count++], "cmp ax,%s_%s", val, f->nome);
-            }
+        if(values[0]>='0' && values[0]<='9'){
+             sprintf(f->linhas[f->linha_count++], "mov ax,%s",values);
+             sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
+
+         }else{
+             sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s",values, f->nome);
+             sprintf(f->linhas[f->linha_count++], "mov %s_%s,ax", vars, f->nome);
+         }
             sprintf(f->linhas[f->linha_count++], "jne %s", label_fim);
         } else if (strstr(l, "!=")) {
-            if(val[0]>='0' && val[0]<='9'){
-                sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
-            }else{
-                sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s", var, f->nome);
-                sprintf(f->linhas[f->linha_count++], "cmp ax,%s_%s", val, f->nome);
-            }
+        if(values[0]>='0' && values[0]<='9'){
+             sprintf(f->linhas[f->linha_count++], "mov ax,%s",values);
+             sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
+
+         }else{
+             sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s",values, f->nome);
+             sprintf(f->linhas[f->linha_count++], "mov %s_%s,ax", vars, f->nome);
+         }
             sprintf(f->linhas[f->linha_count++], "je %s", label_fim);
         } else if (strstr(l, ">")) {
-            if(val[0]>='0' && val[0]<='9'){
-                sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
-            }else{
-                sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s", var, f->nome);
-                sprintf(f->linhas[f->linha_count++], "cmp ax,%s_%s", val, f->nome);
-            }
+        if(values[0]>='0' && values[0]<='9'){
+             sprintf(f->linhas[f->linha_count++], "mov ax,%s",values);
+             sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
+
+         }else{
+             sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s",values, f->nome);
+             sprintf(f->linhas[f->linha_count++], "mov %s_%s,ax", vars, f->nome);
+         }
             sprintf(f->linhas[f->linha_count++], "jle %s", label_fim);
         } else if (strstr(l, "<")) {
-            if(val[0]>='0' && val[0]<='9'){
-                sprintf(f->linhas[f->linha_count++], "cmp %s_%s, %s", var, f->nome, val);
-            }else{
-                sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s", var, f->nome);
-                sprintf(f->linhas[f->linha_count++], "cmp ax,%s_%s", val, f->nome);
-            }
+        if(values[0]>='0' && values[0]<='9'){
+             sprintf(f->linhas[f->linha_count++], "mov ax,%s",values);
+             sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
+
+         }else{
+             sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s",values, f->nome);
+             sprintf(f->linhas[f->linha_count++], "mov %s_%s,ax", vars, f->nome);
+         }
             sprintf(f->linhas[f->linha_count++], "jge %s", label_fim);
         }
-        sprintf(backLines, "inc %s_%s\n    ; ... (bloco do for)\n    jmp %s\n    %s:", adds, f->nome , label_topo,label_fim);
+        sprintf(backLines, "inc word [%s_%s]\n    ; ... (bloco do for)\n    jmp %s\n    %s:", adds, f->nome , label_topo,label_fim);
         linec=0;
         lineb=1;
         came1=0;
