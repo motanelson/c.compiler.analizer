@@ -656,6 +656,8 @@ void gravar_saida(const char* nome_saida) {
 
 int main() {
     char nome[256];
+    char runer[1024];
+    char *strr=NULL;
     printf("\033c\033[43;30m\nNome do ficheiro C (.c): ");
     scanf("%s", nome);
 
@@ -683,6 +685,15 @@ int main() {
     else strcat(saida, ".S");
 
     gravar_saida(saida);
+    strcpy(runer,"nasm -f bin -o ");
+    strr=strstr(nome,".");
+    if(strr!=NULL)strr[0]=0;
+    strcat(runer,nome);
+    strcat(runer,".com");
+    strcat(runer," ");
+    strcat(runer,saida);
+    system(runer);
+    printf("%s\n",runer);
     free(buffer);
     return 0;
 }
