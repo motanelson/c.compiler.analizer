@@ -146,7 +146,7 @@ void processar_linha(Subrotina* f, const char* linha) {
         if(val[0]>='0' && val[0]<='9'){
             sprintf(f->linhas[f->linha_count++], "mov ax, %s", val);
         }else{
-            sprintf(f->linhas[f->linha_count++], "mov ax, %s_%s", val, f->nome);
+            sprintf(f->linhas[f->linha_count++], "mov ax, [%s_%s]", val, f->nome);
         }
         sprintf(f->linhas[f->linha_count++], "ret");
         came1=1;
@@ -517,8 +517,8 @@ void processar_linha(Subrotina* f, const char* linha) {
              sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
 
          }else{
-             sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s",values, f->nome);
-             sprintf(f->linhas[f->linha_count++], "mov %s_%s,ax", vars, f->nome);
+             sprintf(f->linhas[f->linha_count++], "mov ax,[%s_%s]",values, f->nome);
+             sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
          }
         sprintf(f->linhas[f->linha_count++], "%s:", label_topo);
         if (strstr(l, "==")) {
@@ -527,8 +527,8 @@ void processar_linha(Subrotina* f, const char* linha) {
              sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
 
          }else{
-             sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s",values, f->nome);
-             sprintf(f->linhas[f->linha_count++], "mov %s_%s,ax", vars, f->nome);
+             sprintf(f->linhas[f->linha_count++], "mov ax,[%s_%s]",values, f->nome);
+             sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
          }
             sprintf(f->linhas[f->linha_count++], "jne %s", label_fim);
         } else if (strstr(l, "!=")) {
@@ -537,8 +537,8 @@ void processar_linha(Subrotina* f, const char* linha) {
              sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
 
          }else{
-             sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s",values, f->nome);
-             sprintf(f->linhas[f->linha_count++], "mov %s_%s,ax", vars, f->nome);
+             sprintf(f->linhas[f->linha_count++], "mov ax,[%s_%s]",values, f->nome);
+             sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
          }
             sprintf(f->linhas[f->linha_count++], "je %s", label_fim);
         } else if (strstr(l, ">")) {
@@ -547,8 +547,8 @@ void processar_linha(Subrotina* f, const char* linha) {
              sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
 
          }else{
-             sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s",values, f->nome);
-             sprintf(f->linhas[f->linha_count++], "mov %s_%s,ax", vars, f->nome);
+             sprintf(f->linhas[f->linha_count++], "mov ax,[%s_%s]",values, f->nome);
+             sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
          }
             sprintf(f->linhas[f->linha_count++], "jle %s", label_fim);
         } else if (strstr(l, "<")) {
@@ -557,8 +557,8 @@ void processar_linha(Subrotina* f, const char* linha) {
              sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
 
          }else{
-             sprintf(f->linhas[f->linha_count++], "mov ax,%s_%s",values, f->nome);
-             sprintf(f->linhas[f->linha_count++], "mov %s_%s,ax", vars, f->nome);
+             sprintf(f->linhas[f->linha_count++], "mov ax,[%s_%s]",values, f->nome);
+             sprintf(f->linhas[f->linha_count++], "mov [%s_%s],ax", vars, f->nome);
          }
             sprintf(f->linhas[f->linha_count++], "jge %s", label_fim);
         }
